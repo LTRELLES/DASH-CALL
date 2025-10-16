@@ -1,0 +1,680 @@
+import React, { useState } from 'react';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Phone, Clock, Users, TrendingUp, AlertCircle, Award, Activity } from 'lucide-react';
+
+const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState('ejecutivo');
+
+  const dataPorHora = [
+    { hora: '00', contestadas: 0, abandonadas: 0, total: 1, espera: 30, durAire: 0 },
+    { hora: '02', contestadas: 0, abandonadas: 0, total: 2, espera: 40, durAire: 0 },
+    { hora: '05', contestadas: 0, abandonadas: 0, total: 5, espera: 0, durAire: 0 },
+    { hora: '06', contestadas: 1, abandonadas: 0, total: 1, espera: 0, durAire: 0 },
+    { hora: '07', contestadas: 5, abandonadas: 0, total: 6, espera: 0, durAire: 0 },
+    { hora: '08', contestadas: 13, abandonadas: 1, total: 32, espera: 8.33, durAire: 185.28 },
+    { hora: '09', contestadas: 42, abandonadas: 7, total: 76, espera: 20.98, durAire: 156.83 },
+    { hora: '10', contestadas: 44, abandonadas: 2, total: 54, espera: 2.89, durAire: 213.2 },
+    { hora: '11', contestadas: 23, abandonadas: 3, total: 34, espera: 0.97, durAire: 139.38 },
+    { hora: '12', contestadas: 22, abandonadas: 5, total: 48, espera: 3.44, durAire: 123.18 },
+    { hora: '13', contestadas: 16, abandonadas: 1, total: 33, espera: 1.8, durAire: 64.96 },
+    { hora: '14', contestadas: 9, abandonadas: 1, total: 16, espera: 0.9, durAire: 191.93 },
+    { hora: '15', contestadas: 32, abandonadas: 2, total: 40, espera: 0.67, durAire: 128.63 },
+    { hora: '16', contestadas: 21, abandonadas: 8, total: 36, espera: 1.76, durAire: 218.59 },
+    { hora: '17', contestadas: 61, abandonadas: 8, total: 89, espera: 4.48, durAire: 87.24 },
+    { hora: '18', contestadas: 7, abandonadas: 2, total: 14, espera: 1.38, durAire: 233.66 },
+    { hora: '19', contestadas: 11, abandonadas: 9, total: 32, espera: 52.8, durAire: 297.13 },
+    { hora: '20', contestadas: 6, abandonadas: 9, total: 21, espera: 0.81, durAire: 132.62 },
+    { hora: '21', contestadas: 5, abandonadas: 5, total: 12, espera: 0, durAire: 35.2 },
+    { hora: '22', contestadas: 0, abandonadas: 0, total: 5, espera: 0, durAire: 0 },
+    { hora: '23', contestadas: 0, abandonadas: 0, total: 2, espera: 0, durAire: 0 }
+  ];
+
+  const agentes = [
+    { nombre: 'Alvaro Leon', apellido: 'Yaranga', contestadas: 73, noContestadas: 6, ocupadas: 0, total: 79, efectividad: 92.4 },
+    { nombre: 'Cesar Herbozo', apellido: 'Pacsi', contestadas: 72, noContestadas: 0, ocupadas: 0, total: 72, efectividad: 100 },
+    { nombre: 'Johanna Romero', apellido: '', contestadas: 52, noContestadas: 3, ocupadas: 3, total: 58, efectividad: 89.7 },
+    { nombre: 'Violeta Huacachi', apellido: 'Tito', contestadas: 49, noContestadas: 0, ocupadas: 0, total: 49, efectividad: 100 },
+    { nombre: 'Mercedes Torres', apellido: '', contestadas: 24, noContestadas: 1, ocupadas: 0, total: 25, efectividad: 96.0 },
+    { nombre: 'Samaria Cortez', apellido: 'Quispe', contestadas: 21, noContestadas: 0, ocupadas: 0, total: 21, efectividad: 100 },
+    { nombre: 'Luis Trelles', apellido: 'Rivadeneyra', contestadas: 11, noContestadas: 8, ocupadas: 0, total: 19, efectividad: 57.9 }
+  ];
+
+  const campanias = [
+    { nombre: 'IN Wings', contestadas: 189, abandonadas: 21, noContestadas: 0, total: 210, tasaExito: 90.0, tasaAbandono: 10.0 },
+    { nombre: 'Entrante CUY', contestadas: 71, abandonadas: 3, noContestadas: 0, total: 74, tasaExito: 95.9, tasaAbandono: 4.1 },
+    { nombre: 'OUT Habla mas', contestadas: 27, abandonadas: 0, noContestadas: 16, total: 44, tasaExito: 61.4, tasaAbandono: 0 },
+    { nombre: 'IN Habla mas', contestadas: 10, abandonadas: 2, noContestadas: 0, total: 12, tasaExito: 83.3, tasaAbandono: 16.7 },
+    { nombre: 'Entrante FIMO', contestadas: 3, abandonadas: 0, noContestadas: 0, total: 3, tasaExito: 100, tasaAbandono: 0 },
+    { nombre: 'OUT Wings', contestadas: 1, abandonadas: 0, noContestadas: 0, total: 3, tasaExito: 33.3, tasaAbandono: 0 },
+    { nombre: 'Saliente CUY', contestadas: 1, abandonadas: 0, noContestadas: 2, total: 3, tasaExito: 33.3, tasaAbandono: 0 }
+  ];
+
+  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+  const KPICard = ({ title, value, subtitle, icon: Icon, color }) => (
+    <div className="bg-white rounded-lg shadow p-6 border-l-4" style={{ borderColor: color }}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-600 mb-1">{title}</p>
+          <p className="text-3xl font-bold" style={{ color }}>{value}</p>
+          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+        </div>
+        <Icon className="w-12 h-12 opacity-20" style={{ color }} />
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full bg-gray-50 p-6 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">Dashboard Centro de Llamadas</h1>
+          <p className="text-gray-600 mt-1">Usuario: Luis Paul Trelles Rivadeneyra</p>
+        </div>
+        
+        <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+          {[
+            { id: 'ejecutivo', label: 'Dashboard Ejecutivo', icon: Activity },
+            { id: 'horario', label: 'Análisis por Hora', icon: Clock },
+            { id: 'agentes', label: 'Desempeño Agentes', icon: Users },
+            { id: 'campanias', label: 'Análisis Campañas', icon: Phone },
+            { id: 'calidad', label: 'Calidad de Servicio', icon: Award }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap flex items-center gap-2 ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white shadow-lg'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === 'ejecutivo' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <KPICard 
+                title="Total Llamadas" 
+                value="588" 
+                subtitle="538 Entrantes | 50 Salientes" 
+                icon={Phone} 
+                color="#3b82f6" 
+              />
+              <KPICard 
+                title="Llamadas Contestadas" 
+                value="302" 
+                subtitle="51.4% del total" 
+                icon={TrendingUp} 
+                color="#10b981" 
+              />
+              <KPICard 
+                title="Tasa de Abandono" 
+                value="9.2%" 
+                subtitle="54 llamadas abandonadas" 
+                icon={AlertCircle} 
+                color="#ef4444" 
+              />
+              <KPICard 
+                title="Tiempo Espera Prom." 
+                value="6.5s" 
+                subtitle="Máximo: 68s" 
+                icon={Clock} 
+                color="#f59e0b" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Distribución de Resultados</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie 
+                      data={[
+                        { name: 'Contestadas', value: 302 },
+                        { name: 'No Contestadas', value: 41 },
+                        { name: 'Abandonadas', value: 54 },
+                        { name: 'Ocupadas', value: 13 },
+                        { name: 'IVR', value: 18 }
+                      ]} 
+                      cx="50%" 
+                      cy="50%" 
+                      outerRadius={100} 
+                      dataKey="value" 
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {[0, 1, 2, 3, 4].map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Top 5 Agentes por Volumen</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={agentes.slice(0, 5)}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="nombre" angle={-15} textAnchor="end" height={80} />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="contestadas" fill="#10b981" name="Contestadas" />
+                    <Bar dataKey="noContestadas" fill="#ef4444" name="No Contestadas" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Volumen de Llamadas por Hora</h3>
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart data={dataPorHora}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hora" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="contestadas" stroke="#10b981" name="Contestadas" strokeWidth={2} />
+                  <Line type="monotone" dataKey="abandonadas" stroke="#ef4444" name="Abandonadas" strokeWidth={2} />
+                  <Line type="monotone" dataKey="total" stroke="#3b82f6" name="Total" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'horario' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <KPICard title="Hora Pico" value="17:00" subtitle="89 llamadas totales" icon={TrendingUp} color="#3b82f6" />
+              <KPICard title="Mayor Efectividad" value="07:00" subtitle="83.3% contestadas" icon={Award} color="#10b981" />
+              <KPICard title="Mayor Tiempo Espera" value="19:00" subtitle="52.8 segundos" icon={AlertCircle} color="#ef4444" />
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Distribución Horaria de Llamadas</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={dataPorHora}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hora" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="contestadas" fill="#10b981" name="Contestadas" />
+                  <Bar dataKey="abandonadas" fill="#ef4444" name="Abandonadas" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Tiempo de Espera por Hora</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={dataPorHora}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="hora" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="espera" stroke="#f59e0b" strokeWidth={2} name="Tiempo Espera (s)" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Duración al Aire por Hora</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={dataPorHora}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="hora" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="durAire" stroke="#8b5cf6" strokeWidth={2} name="Duración (s)" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <h3 className="text-lg font-semibold p-6 pb-4 text-gray-800">Detalle por Hora</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Contestadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Abandonadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Efectividad</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Tiempo Espera</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {dataPorHora.filter(h => h.total > 0).map((hora, idx) => (
+                      <tr key={idx} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{hora.hora}:00</td>
+                        <td className="px-6 py-4 text-sm text-right">{hora.total}</td>
+                        <td className="px-6 py-4 text-sm text-right text-green-600 font-medium">{hora.contestadas}</td>
+                        <td className="px-6 py-4 text-sm text-right text-red-600">{hora.abandonadas}</td>
+                        <td className="px-6 py-4 text-sm text-right font-medium">
+                          {hora.total > 0 ? ((hora.contestadas / hora.total) * 100).toFixed(1) : 0}%
+                        </td>
+                        <td className="px-6 py-4 text-sm text-right">{hora.espera.toFixed(1)}s</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'agentes' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <KPICard title="Top Agente" value="Alvaro Leon" subtitle="79 llamadas totales" icon={Award} color="#3b82f6" />
+              <KPICard title="Mejor Efectividad" value="100%" subtitle="3 agentes con 100%" icon={TrendingUp} color="#10b981" />
+              <KPICard title="Total Agentes" value="7" subtitle="Activos en el período" icon={Users} color="#8b5cf6" />
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Ranking de Agentes por Volumen</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={agentes} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="nombre" type="category" width={120} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="contestadas" fill="#10b981" name="Contestadas" />
+                  <Bar dataKey="noContestadas" fill="#ef4444" name="No Contestadas" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Comparativa de Efectividad</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={agentes}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="nombre" angle={-15} textAnchor="end" height={80} />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Bar dataKey="efectividad" fill="#3b82f6" name="Efectividad %" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <h3 className="text-lg font-semibold p-6 pb-4 text-gray-800">Detalle de Desempeño por Agente</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Agente</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Contestadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">No Contest.</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ocupadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Efectividad</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {agentes.map((agente, idx) => (
+                      <tr key={idx} className={agente.nombre === 'Luis Trelles' ? 'bg-blue-50' : 'hover:bg-gray-50'}>
+                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                          {agente.nombre}
+                          {agente.nombre === 'Luis Trelles' && (
+                            <span className="ml-2 text-xs bg-blue-600 text-white px-2 py-1 rounded">TÚ</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-right font-medium">{agente.total}</td>
+                        <td className="px-6 py-4 text-sm text-right text-green-600 font-medium">{agente.contestadas}</td>
+                        <td className="px-6 py-4 text-sm text-right text-red-600">{agente.noContestadas}</td>
+                        <td className="px-6 py-4 text-sm text-right text-yellow-600">{agente.ocupadas}</td>
+                        <td className="px-6 py-4 text-sm text-right">
+                          <span className={`font-medium ${agente.efectividad >= 90 ? 'text-green-600' : agente.efectividad >= 70 ? 'text-yellow-600' : 'text-red-600'}`}>
+                            {agente.efectividad.toFixed(1)}%
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'campanias' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <KPICard title="Mejor Campaña" value="IN Wings" subtitle="210 llamadas" icon={Award} color="#3b82f6" />
+              <KPICard title="Mayor Efectividad" value="100%" subtitle="Entrante FIMO" icon={TrendingUp} color="#10b981" />
+              <KPICard title="Total Campañas" value="7" subtitle="5 entrantes | 2 salientes" icon={Phone} color="#8b5cf6" />
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Volumen por Campaña</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={campanias} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="nombre" type="category" width={140} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="contestadas" fill="#10b981" name="Contestadas" />
+                  <Bar dataKey="abandonadas" fill="#ef4444" name="Abandonadas" />
+                  <Bar dataKey="noContestadas" fill="#f59e0b" name="No Contestadas" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Tasa de Éxito por Campaña</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={campanias}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="nombre" angle={-20} textAnchor="end" height={100} />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip />
+                    <Bar dataKey="tasaExito" fill="#10b981" name="Tasa Éxito %" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Tasa de Abandono</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={campanias}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="nombre" angle={-20} textAnchor="end" height={100} />
+                    <YAxis domain={[0, 20]} />
+                    <Tooltip />
+                    <Bar dataKey="tasaAbandono" fill="#ef4444" name="Tasa Abandono %" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <h3 className="text-lg font-semibold p-6 pb-4 text-gray-800">Métricas Detalladas por Campaña</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Campaña</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Contestadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Abandonadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">No Contest.</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Tasa Éxito</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {campanias.map((camp, idx) => (
+                      <tr key={idx} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">{camp.nombre}</td>
+                        <td className="px-6 py-4 text-sm text-right font-medium">{camp.total}</td>
+                        <td className="px-6 py-4 text-sm text-right text-green-600 font-medium">{camp.contestadas}</td>
+                        <td className="px-6 py-4 text-sm text-right text-red-600">{camp.abandonadas}</td>
+                        <td className="px-6 py-4 text-sm text-right text-yellow-600">{camp.noContestadas}</td>
+                        <td className="px-6 py-4 text-sm text-right">
+                          <span className={`font-medium ${camp.tasaExito >= 90 ? 'text-green-600' : camp.tasaExito >= 70 ? 'text-yellow-600' : 'text-red-600'}`}>
+                            {camp.tasaExito.toFixed(1)}%
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'calidad' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <KPICard 
+                title="Nivel de Servicio" 
+                value="51.4%" 
+                subtitle="302 de 588 contestadas" 
+                icon={TrendingUp} 
+                color="#10b981" 
+              />
+              <KPICard 
+                title="Tasa de Abandono" 
+                value="9.2%" 
+                subtitle="54 llamadas abandonadas" 
+                icon={AlertCircle} 
+                color="#ef4444" 
+              />
+              <KPICard 
+                title="Tiempo Espera Prom." 
+                value="6.5s" 
+                subtitle="Objetivo: < 20s ✓" 
+                icon={Clock} 
+                color="#3b82f6" 
+              />
+              <KPICard 
+                title="TMO Promedio" 
+                value="175.8s" 
+                subtitle="2 min 56 seg" 
+                icon={Phone} 
+                color="#8b5cf6" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Cumplimiento de Nivel de Servicio</h3>
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">Llamadas Contestadas</span>
+                      <span className="text-2xl font-bold text-green-600">51.4%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-4">
+                      <div className="bg-green-500 h-4 rounded-full" style={{width: '51.4%'}}></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">302 de 588 llamadas</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">Tasa de Abandono</span>
+                      <span className="text-2xl font-bold text-red-600">9.2%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-4">
+                      <div className="bg-red-500 h-4 rounded-full" style={{width: '9.2%'}}></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">54 llamadas abandonadas</p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">Llamadas No Contestadas</span>
+                      <span className="text-2xl font-bold text-yellow-600">7.0%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-4">
+                      <div className="bg-yellow-500 h-4 rounded-full" style={{width: '7.0%'}}></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">41 llamadas no contestadas</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Indicadores de Calidad</h3>
+                <div className="space-y-4">
+                  <div className="border-l-4 border-green-500 pl-4 py-2">
+                    <p className="text-sm text-gray-600">Tiempo de Espera Promedio</p>
+                    <p className="text-2xl font-bold text-gray-800">6.5 seg</p>
+                    <p className="text-xs text-green-600 font-medium">✓ Dentro del objetivo (&lt; 20s)</p>
+                  </div>
+
+                  <div className="border-l-4 border-blue-500 pl-4 py-2">
+                    <p className="text-sm text-gray-600">Tiempo Máximo de Espera</p>
+                    <p className="text-2xl font-bold text-gray-800">68 seg</p>
+                    <p className="text-xs text-gray-500">Ocurrido a las 19:00</p>
+                  </div>
+
+                  <div className="border-l-4 border-purple-500 pl-4 py-2">
+                    <p className="text-sm text-gray-600">Duración Promedio al Aire</p>
+                    <p className="text-2xl font-bold text-gray-800">158.3 seg</p>
+                    <p className="text-xs text-gray-500">2 min 38 seg por llamada</p>
+                  </div>
+
+                  <div className="border-l-4 border-indigo-500 pl-4 py-2">
+                    <p className="text-sm text-gray-600">Duración Total Promedio</p>
+                    <p className="text-2xl font-bold text-gray-800">175.8 seg</p>
+                    <p className="text-xs text-gray-500">2 min 56 seg (TMO)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Evolución del Tiempo de Espera</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={dataPorHora.filter(h => h.total > 0)}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hora" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="espera" stroke="#f59e0b" strokeWidth={2} name="Tiempo Espera (s)" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Distribución de Tiempos</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={[
+                    { metrica: 'Redondeo', valor: 4.0 },
+                    { metrica: 'Tiempo Espera', valor: 6.5 },
+                    { metrica: 'Duración Aire', valor: 158.3 },
+                    { metrica: 'TMO Total', valor: 175.8 }
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="metrica" angle={-15} textAnchor="end" height={80} />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="valor" fill="#3b82f6" name="Segundos" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Resumen de Calidad</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">Tiempo Espera Objetivo</span>
+                    </div>
+                    <span className="text-sm font-bold text-green-600">Cumplido</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">Nivel de Servicio</span>
+                    </div>
+                    <span className="text-sm font-bold text-yellow-600">Mejorable</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">Tasa de Abandono</span>
+                    </div>
+                    <span className="text-sm font-bold text-green-600">Aceptable</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-gray-700">TMO Promedio</span>
+                    </div>
+                    <span className="text-sm font-bold text-blue-600">Normal</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <h4 className="font-semibold text-gray-800 mb-2">Recomendaciones</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Mejorar nivel de servicio al 80%+</li>
+                    <li>• Reducir picos de espera en hora 19:00</li>
+                    <li>• Mantener TMO dentro de estándares</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <h3 className="text-lg font-semibold p-6 pb-4 text-gray-800">Métricas de Calidad por Hora</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hora</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Contestadas</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Nivel Servicio</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Tiempo Espera</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {dataPorHora.filter(h => h.total > 0).map((hora, idx) => {
+                      const nivelServicio = (hora.contestadas / hora.total) * 100;
+                      return (
+                        <tr key={idx} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">{hora.hora}:00</td>
+                          <td className="px-6 py-4 text-sm text-right">{hora.total}</td>
+                          <td className="px-6 py-4 text-sm text-right text-green-600 font-medium">{hora.contestadas}</td>
+                          <td className="px-6 py-4 text-sm text-right font-medium">
+                            <span className={nivelServicio >= 80 ? 'text-green-600' : nivelServicio >= 60 ? 'text-yellow-600' : 'text-red-600'}>
+                              {nivelServicio.toFixed(1)}%
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-right">
+                            <span className={hora.espera < 20 ? 'text-green-600' : hora.espera < 40 ? 'text-yellow-600' : 'text-red-600'}>
+                              {hora.espera.toFixed(1)}s
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-right">
+                            {hora.espera < 20 && nivelServicio >= 60 ? (
+                              <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">Óptimo</span>
+                            ) : hora.espera < 40 && nivelServicio >= 40 ? (
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-medium">Aceptable</span>
+                            ) : (
+                              <span className="px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-medium">Crítico</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
